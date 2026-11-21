@@ -16,7 +16,7 @@ import (
 
 const appeekyBody = `{"text":"*Appeeky Spec · Foam*: 1 alert\n• warning: Google search clicks fell 40%. 120 clicks (2026-11-06 → 2026-11-19, appeeky/seo/daily.csv). Next: Run seo check."}`
 
-const sentryBody = `{"action":"triggered","data":{"triggered_rule":"r","event":{"title":"boom","level":"error"}}}`
+const sentryBody = `{"action":"triggered","data":{"triggered_rule":"r","event":{"title":"boom","level":"error","environment":"production"}}}`
 
 type fakeSender struct {
 	err  error
