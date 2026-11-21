@@ -19,10 +19,18 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
-          ref: ${{ github.head_ref }}
+          persist-credentials: false
 
       - name: Install
         uses: ./.github/actions/install
+
+      - name: Check PR title (conventional commits)
+        if: github.event_name == 'pull_request'
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          printf '%s\n' "$PR_TITLE" > "$RUNNER_TEMP/pr_title"
+          uvx --from commitizen cz check --commit-msg-file "$RUNNER_TEMP/pr_title"
 
       - name: Validate
         uses: ./.github/actions/validate
