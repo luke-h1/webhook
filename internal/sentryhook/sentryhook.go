@@ -22,6 +22,8 @@ const (
 	ResourceInstallation = "installation"
 )
 
+const productionEnvironment = "production"
+
 var ErrMissingSignature = errors.New("sentry webhook missing signature")
 
 type envelope struct {
@@ -144,6 +146,9 @@ const (
 
 func eventAlertMessage(data *eventAlertData) *notify.Message {
 	event := data.Event
+	if event.Environment != productionEnvironment {
+		return nil
+	}
 	return &notify.Message{
 		Source: source,
 		Kind:   "Alert",
@@ -222,6 +227,9 @@ func issueMessage(action string, data *issueData) *notify.Message {
 
 func errorMessage(data *errorData) *notify.Message {
 	sentryErr := data.Error
+	if sentryErr.Environment != productionEnvironment {
+		return nil
+	}
 	return &notify.Message{
 		Source: source,
 		Kind:   "Error",

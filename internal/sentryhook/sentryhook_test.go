@@ -53,7 +53,7 @@ func TestParseWebhook(t *testing.T) {
 		{
 			name:      "issue alert",
 			resource:  ResourceEventAlert,
-			body:      `{"action":"triggered","data":{"triggered_rule":"Send to Discord","event":{"title":"ReferenceError: heck is not defined","web_url":"https://luke-howsam.sentry.io/issues/1117540176/events/abc/","issue_id":"1117540176","level":"error","culprit":"?(<anonymous>)","project":1,"platform":"javascript","release":null}}}`,
+			body:      `{"action":"triggered","data":{"triggered_rule":"Send to Discord","event":{"title":"ReferenceError: heck is not defined","web_url":"https://luke-howsam.sentry.io/issues/1117540176/events/abc/","issue_id":"1117540176","level":"error","culprit":"?(<anonymous>)","environment":"production","project":1,"platform":"javascript","release":null}}}`,
 			wantTitle: "ReferenceError: heck is not defined",
 			wantColor: notify.ColorRed,
 			wantParts: []string{"Rule: Send to Discord", "Culprit: ?(<anonymous>)", "https://luke-howsam.sentry.io/issues/1117540176/events/abc/"},
@@ -85,7 +85,7 @@ func TestParseWebhook(t *testing.T) {
 		{
 			name:      "error",
 			resource:  ResourceError,
-			body:      `{"action":"created","data":{"error":{"title":"ReferenceError: blooopy is not defined","web_url":"https://luke-howsam.sentry.io/issues/2/events/bb/","level":"error","culprit":"?(runner)","issue_id":"2","project":1,"release":null}}}`,
+			body:      `{"action":"created","data":{"error":{"title":"ReferenceError: blooopy is not defined","web_url":"https://luke-howsam.sentry.io/issues/2/events/bb/","level":"error","culprit":"?(runner)","environment":"production","issue_id":"2","project":1,"release":null}}}`,
 			wantTitle: "ReferenceError: blooopy is not defined",
 			wantColor: notify.ColorRed,
 			wantParts: []string{"Culprit: ?(runner)"},
@@ -121,6 +121,9 @@ func TestParseWebhookSkips(t *testing.T) {
 	}{
 		{name: "installation", resource: ResourceInstallation, body: `{"action":"created","data":{}}`},
 		{name: "issue resolved", resource: ResourceIssue, body: `{"action":"resolved","data":{"issue":{}}}`},
+		{name: "issue alert outside production", resource: ResourceEventAlert, body: `{"action":"triggered","data":{"event":{"title":"boom","environment":"staging"}}}`},
+		{name: "issue alert without environment", resource: ResourceEventAlert, body: `{"action":"triggered","data":{"event":{"title":"boom"}}}`},
+		{name: "error outside production", resource: ResourceError, body: `{"action":"created","data":{"error":{"title":"boom","environment":"development"}}}`},
 		{name: "unknown resource", resource: "comment", body: `{"action":"created","data":{}}`},
 	}
 	for _, tt := range tests {
