@@ -2,7 +2,12 @@
 
 Small webhook that handles routing notifications from various services to my telegram and discord channels
 
-## Commit messages
+## Tech Stack
+
+- [Go](https://go.dev)
+- [AWS lambda](https://docs.aws.amazon.com/lambda)
+
+## Commit Messages
 
 Commit messages follow conventional commits:
 
