@@ -14,12 +14,12 @@ runs:
       shell: bash
 
     - name: Set up Go
-      uses: actions/setup-go@v7
+      uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7
       with:
         go-version-file: go.mod
 
     - name: Set up uv
-      uses: astral-sh/setup-uv@v7
+      uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
 
     - name: Check commit message (conventional commits)
       run: |
