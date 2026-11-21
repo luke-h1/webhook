@@ -1,0 +1,28 @@
+name: Install
+description: Install dependencies and setup
+runs:
+  using: composite
+  steps:
+    - name: Tune Linux network
+      run: |
+        IFACE="$(ip -o route show default | awk '{ print $5; exit }')"
+        if [ -z "$IFACE" ]; then
+          echo "No default interface; skipping the offload tuning"
+          exit 0
+        fi
+        sudo ethtool -K "$IFACE" tx off rx off
+      shell: bash
+
+    - name: Set up Go
+      uses: actions/setup-go@v7
+      with:
+        go-version-file: go.mod
+
+    - name: Set up uv
+      uses: astral-sh/setup-uv@v7
+
+    - name: Check commit message (conventional commits)
+      run: |
+        git log -1 --pretty=%B HEAD > /tmp/commit_msg
+        uvx --from commitizen cz check --commit-msg-file /tmp/commit_msg
+      shell: bash

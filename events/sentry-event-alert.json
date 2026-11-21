@@ -1,0 +1,14 @@
+{
+  "path": "/api/sentry",
+  "httpMethod": "POST",
+  "headers": {
+    "content-type": "application/json",
+    "sentry-hook-resource": "event_alert",
+    "sentry-hook-signature": "c3ce74751c44a91db1b98d6fded4e5182a4bfe768187c0c98b0f5902fdd54043"
+  },
+  "body": "{\"action\":\"triggered\",\"installation\":{\"uuid\":\"local\"},\"data\":{\"triggered_rule\":\"Send to Discord\",\"event\":{\"title\":\"ReferenceError: stuff is not defined\",\"web_url\":\"https://luke-howsam.sentry.io/issues/1/events/abc/\",\"issue_id\":\"1\",\"level\":\"error\",\"culprit\":\"?(<anonymous>)\",\"environment\":\"production\"}},\"actor\":{\"type\":\"application\",\"id\":\"sentry\",\"name\":\"Sentry\"}}",
+  "requestContext": {
+    "httpMethod": "POST",
+    "requestId": "local-sentry"
+  }
+}

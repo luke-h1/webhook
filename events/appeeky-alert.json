@@ -1,0 +1,15 @@
+{
+  "path": "/api/appeeky",
+  "httpMethod": "POST",
+  "queryStringParameters": {
+    "key": "local-appeeky-key"
+  },
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"text\": \"*Appeeky Spec · Foam*: 2 alerts (1 critical)\\n• *CRITICAL*: Release 2026-11-02 lost on day 7. decided by downloads; 1 won, 2 lost (2026-11-02 → 2026-11-09, appeeky/releases/2026-11-02.yaml). Next: A person decides: revert 2026-11-02, then push (skill appeeky-spec-review).\\n• warning: Google search clicks fell 40%. 120 clicks in 7 days to 2026-11-19 (17.1/day), 200 in the 7 days before (28.6/day) (2026-11-06 → 2026-11-19, appeeky/seo/daily.csv). Next: Read appeeky/seo/summary.md (skill appeeky-spec-seo).\"}",
+  "requestContext": {
+    "httpMethod": "POST",
+    "requestId": "local-appeeky"
+  }
+}

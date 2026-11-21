@@ -1,0 +1,66 @@
+name: Deploy production
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+concurrency:
+  group: build-production-version
+  cancel-in-progress: false
+permissions:
+  contents: read
+
+env:
+  TF_VAR_deployed_by: ${{ github.actor }}
+  TF_VAR_git_sha: ${{ github.sha }}
+
+jobs:
+  release:
+    name: Deploy production
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.sha }}
+
+      - name: Load secrets
+        id: load_secrets
+        uses: 1password/load-secrets-action@v5
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          AWS_ACCESS_KEY_ID: op://ci-cd/shared-infra/AWS_ACCESS_KEY_ID
+          AWS_SECRET_ACCESS_KEY: op://ci-cd/shared-infra/AWS_SECRET_ACCESS_KEY
+          TF_VAR_appeeky_api_key: op://ci-cd/webhook/APPEEKY_API_KEY
+          TF_VAR_sentry_client_secret: op://ci-cd/webhook/SENTRY_CLIENT_SECRET
+          TF_VAR_discord_webhook_url: op://ci-cd/webhook/DISCORD_WEBHOOK_URL
+          TF_VAR_telegram_bot_token: op://ci-cd/webhook/TELEGRAM_BOT_TOKEN
+          TF_VAR_telegram_chat_id: op://ci-cd/webhook/TELEGRAM_CHAT_ID
+          TF_VAR_private_key: op://ci-cd/webhook/PRIVATE_KEY
+          TF_VAR_certificate_body: op://ci-cd/webhook/CERTIFICATE_BODY
+          TF_VAR_certificate_chain: op://ci-cd/webhook/CERTIFICATE_CHAIN
+
+      - name: Check secrets are filled in
+        run: |
+          for name in TF_VAR_appeeky_api_key TF_VAR_sentry_client_secret TF_VAR_discord_webhook_url TF_VAR_telegram_bot_token TF_VAR_telegram_chat_id TF_VAR_private_key TF_VAR_certificate_body; do
+            if [ "${!name}" = "CHANGE_ME" ]; then
+              echo "::error::$name is still CHANGE_ME in op://ci-cd/webhook"
+              exit 1
+            fi
+          done
+
+      - name: Install
+        uses: ./.github/actions/install
+
+      - name: Validate
+        uses: ./.github/actions/validate
+
+      - name: Deploy
+        uses: ./.github/actions/deploy
+        with:
+          aws-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
